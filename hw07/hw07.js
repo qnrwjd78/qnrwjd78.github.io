@@ -1,15 +1,3 @@
-/*--------------------------------------------------------------------------------
-18_SmoothShading.js
-
-- Viewing a 3D unit cylinder at origin with perspective projection
-- Rotating the cylinder by ArcBall interface (by left mouse button dragging)
-- Keyboard controls:
-    - 'a' to switch between camera and model rotation modes in ArcBall interface
-    - 'r' to reset arcball
-    - 's' to switch to smooth shading
-    - 'f' to switch to flat shading
-- Applying Diffuse & Specular reflection using Flat/Smooth shading to the cylinder
-----------------------------------------------------------------------------------*/
 import { resizeAspectRatio, setupText, updateText, Axes } from '../util/util.js';
 import { Shader, readShaderFile } from '../util/shader.js';
 import { Cube } from '../util/cube.js';
