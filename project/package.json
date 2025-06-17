@@ -1,0 +1,22 @@
+{
+    "name": "constellation-game",
+    "version": "1.0.0",
+    "description": "3D Constellation Finding Game with Three.js",
+    "main": "js/main.js",
+    "scripts": {
+      "start": "python -m http.server 8000",
+      "dev": "live-server"
+    },
+    "keywords": [
+      "threejs",
+      "game",
+      "constellation",
+      "webgl",
+      "3d"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "devDependencies": {
+      "live-server": "^1.2.2"
+    }
+  }

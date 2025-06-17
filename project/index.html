@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constellation Finder - 별자리 찾기 게임</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div id="container">
+        <div id="loading">
+            <div>우주를 준비 중입니다...</div>
+            <div class="loading-spinner"></div>
+        </div>
+        
+        <button id="open-panel" class="open-btn">=</button>
+
+        <div id="mission-panel">
+            <div class="mission-title">현재 미션</div>
+            <button id="close-panel" class="close-btn">&gt;</button>
+            <div>찾은 별자리: <span id="found">0</span>/12</div>
+            <div id="current-mission" style="margin-top: 10px;">별자리를 찾아보세요!</div>
+            <div id="mission-hint" style="margin-top: 10px; font-size: 14px; color: #aaa;"></div>
+            <div id="constellation-guide">
+                <div style="font-size: 14px; color: #4FC3F7; margin-bottom: 5px;">연결 순서:</div>
+                <canvas id="guide-canvas"></canvas>
+            </div>
+            
+            <div class="mission-controls">
+            <div class="nav-buttons">
+                <button id="rot-rev" class="nav-btn">&lt;</button>
+                <button id="rot-stop" class="nav-btn">ㅁ</button>
+                <button id="rot-fow" class="nav-btn">&gt;</button>
+            </div>
+            <button class="hint-button" id="hint-button">힌트 보기</button>
+            </div>
+        </div>
+        
+        <div class="success-message" id="success-message">
+            별자리를 찾았습니다!
+        </div>
+        
+        <div class="constellation-info" id="constellation-info">
+            <h3 id="constellation-name"></h3>
+            <p id="constellation-description"></p>
+        </div>
+    </div>
+
+    <!-- Three.js 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r127/three.min.js"></script>
+    <script src="js/lib/OrbitControls.js"></script>
+
+    <!-- 유틸리티와 데이터 먼저 로드 -->
+    <script src="js/utils/MathUtils.js"></script>
+    <script src="js/constellations/ConstellationData.js"></script>
+    
+    <!-- 기본 컴포넌트 -->
+    <script src="js/stars/StarField.js"></script>
+    <script src="js/core/Camera.js"></script>
+    <script src="js/core/Scene.js"></script>
+
+    <!-- 배경 -->
+    <script src="js/obj/AddObjects.js"></script>
+    
+    <!-- 별 관련 시스템 -->
+    <script src="js/ui/StarLabels.js"></script>
+    <script src="js/stars/StarManager.js"></script>
+    
+    <!-- UI 시스템 -->
+    <script src="js/ui/ConstellationGuide.js"></script>
+    <script src="js/ui/UIManager.js"></script>
+    
+    <!-- 별자리 시스템 -->
+    <script src="js/constellations/ConstellationRenderer.js"></script>
+    <script src="js/constellations/ConstellationManager.js"></script>
+    
+    <!-- 메인 게임 -->
+    <script src="js/core/Game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
