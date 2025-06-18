@@ -9,16 +9,17 @@ class ConstellationGame {
         this.starManager = null;
         this.constellationManager = null;
         this.uiManager = null;
+        this.clock = new THREE.Clock();
 
         this.rotAngle = 0;
         this.rotSpeed = 0.005;
         this.ifRotation = false;
         this.rotDirection = 1;
+        this.isPlaying = false;
         
         this.score = 0;
         this.foundConstellations = [];
-
-        this.setupRotationButtons();
+        
     }
 
     init() {
@@ -31,6 +32,10 @@ class ConstellationGame {
         // 이벤트 리스너
         this.setupEventListeners();
         
+        this.initStartUi();
+        this.setupRotationButtons();
+        this.setupWave();
+
         // 로딩 완료
         document.getElementById('loading').style.display = 'none';
         
@@ -77,6 +82,65 @@ class ConstellationGame {
         // 첫 별자리 시작
         this.constellationManager.startNewConstellation();
     }
+
+    initStartUi(){
+        const textureLoader = new THREE.TextureLoader();
+        const ui_0 = new THREE.Sprite(new THREE.SpriteMaterial({ map : textureLoader.load('js/textures/title.png') }));
+        const ui_1 = new THREE.Sprite(new THREE.SpriteMaterial({ map : textureLoader.load('js/textures/click_to_start.png') }));
+
+        ui_0.center = new THREE.Vector2(2, -4);
+        ui_0.scale.set(window.innerWidth * 0.4, window.innerWidth * 0.08, 1);
+        ui_0.position.set(window.innerWidth * 0.4, 0, 0);
+        ui_0.material.transparent = true;
+
+        ui_1.center = new THREE.Vector2(0.5, 0.5);
+        ui_1.scale.set(window.innerWidth * 0.09, window.innerWidth * 0.018, 1);
+        ui_1.position.set(0, -window.innerHeight * 0.4, 0);
+        ui_1.material.transparent = true;
+
+        this.scene.add(ui_0);
+        this.scene.add(ui_1);
+        const missionPanel = document.getElementById("mission-panel");
+
+        window.onpointerdown = () => {
+            if(!this.isPlaying) {
+                gsap.to(this.camera.position, {
+                    x: 0,
+                    y: 400,
+                    z: 0,
+                    duration: 2,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        this.controls = this.cameraController.getControls();
+                        this.controls.maxDistance = 300;
+                        missionPanel.classList.add("hidden")
+                    }
+                });
+
+                gsap.to(ui_0.material, {
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        this.scene.remove(ui_0);
+                    }
+                });
+
+                gsap.to(ui_1.material, {
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        this.scene.remove(ui_1);
+                    }
+                });
+
+                this.isPlaying = true;
+                
+            }
+        }
+    }
+
     setupRotationButtons() {
         const foward = document.getElementById("rot-fow");
         const reverse = document.getElementById("rot-rev");
@@ -96,6 +160,15 @@ class ConstellationGame {
             this.ifRotation = false;
         });
 
+    }
+
+    setupWave(){
+        this.waveUtils = new WaveUtils(
+            this.sceneManager.getPlane(),
+            this.sceneManager.getZVelocity(),
+            this.sceneManager.getSegments(),
+            300
+        );
     }
 
     setupEventListeners() {
@@ -146,35 +219,21 @@ class ConstellationGame {
         
         // 카메라 업데이트
         this.cameraController.update();
+        console.log("camera postion: ", this.camera.position);
+        console.log("camera rotation: ", this.camera.rotation);
 
         // 렌더링
         this.renderer.render(this.scene, this.camera);
 
-        if (this.sceneManager.oceanGeometry) {
-            const pos = this.sceneManager.oceanGeometry.attributes.position;
+        const delta = this.clock.getDelta();
+        this.waveUtils.updateSurface(delta);
 
-            if(this.ifRotation){
-                this.rotAngle += this.rotSpeed * this.rotDirection;
-                console.log("rotating celestial");
-                this.celestial.rotation.y = this.rotAngle;
-                this.celestial.rotation.x = this.rotAngle * 0.5;
-                this.celestial.rotation.z = this.rotAngle * 0.5;
-            }
-            
-            // const time = performance.now() * 0.5;
-            // for (let i = 0; i < pos.count; i++) {
-            //     const x = pos.getX(i);
-            //     const y = pos.getY(i); // CircleGeometry는 x, y 평면 위임
-
-            //     // 중심에서 멀어질수록 높이 변화
-            //     const dist = Math.sqrt(x * x + y * y);
-            //     const wave = Math.sin(dist * 0.1 - time) * 20;
-
-            //     pos.setZ(i, wave);
-            // }
-
-            pos.needsUpdate = true;
-            this.sceneManager.oceanGeometry.computeVertexNormals();
+        if(this.ifRotation){
+            this.rotAngle += this.rotSpeed * this.rotDirection;
+            console.log("rotating celestial");
+            this.celestial.rotation.y = this.rotAngle;
+            this.celestial.rotation.x = this.rotAngle * 0.5;
+            this.celestial.rotation.z = this.rotAngle * 0.5;
         }
 
     }

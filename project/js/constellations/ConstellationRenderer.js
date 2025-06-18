@@ -390,14 +390,4 @@ class ConstellationRenderer {
         });
         this.constellationLines = [];
     }
-
-    clearAll() {
-        this.clearLines();
-        
-        // 모델 제거
-        this.models.forEach(model => {
-            this.scene.remove(model);
-        });
-        this.models = [];
-    }
 }

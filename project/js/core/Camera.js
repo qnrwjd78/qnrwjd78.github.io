@@ -7,7 +7,7 @@ class CameraController {
             10000
         );
 
-        this.camera.position.set(0, 200, 0);
+        this.camera.position.set(-715, 195, -75);
 
         this.controls = new THREE.OrbitControls(this.camera, rendererDomElement);
 
@@ -15,14 +15,17 @@ class CameraController {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.enablePan = false;
-        this.controls.minPolarAngle = Math.PI / 3
-        this.controls.maxPolarAngle = Math.PI * 0.95;
+        
+        this.controls.maxPolarAngle = Math.PI *0.87; // 최대 세로 회전 각도
         this.controls.minDistance = 50;
-        this.controls.maxDistance = 300;
     }
 
     getCamera() {
         return this.camera;
+    }
+
+    getControls() {
+        return this.controls;
     }
 
     update() {

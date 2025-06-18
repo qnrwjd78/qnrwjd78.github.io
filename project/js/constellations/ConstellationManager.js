@@ -2,6 +2,7 @@ class ConstellationManager {
     constructor(scene, camera, starManager, celestial) {
         this.scene = scene;
         this.camera = camera;
+        this.celestial = celestial;
         this.starManager = starManager;
         this.constellationRenderer = new ConstellationRenderer(scene, celestial);
         
@@ -230,7 +231,6 @@ class ConstellationManager {
         this.drawnConnections = [];
         this.firstSelectedStar = null;
         this.starManager.clearStars();
-        this.constellationRenderer.clearAll();
     }
 
     onGameComplete() {

@@ -1,7 +1,10 @@
 class SceneManager {
     constructor() {
+        this.segments = 200;
+        this.size = 2000;
         this.scene = new THREE.Scene();
         this.celestial = new THREE.Group();
+        this.z_velocity = new Float32Array((this.segments + 1) ** 2);
         this.scene.add(this.celestial);
         this.scene.fog = new THREE.FogExp2(0x000000, 0.00005);
         
@@ -18,33 +21,61 @@ class SceneManager {
         return this.celestial;
     }
 
-    setupPlane() {
-        const geometry = new THREE.CircleGeometry(4000, 128).toNonIndexed(); // 세그먼트 높게
-        const material = new THREE.MeshStandardMaterial({
-            color: 0x204080,
-            side: THREE.DoubleSide,
-            metalness: 0.3,
-            roughness: 0.4,
-            transparent: true,
-            opacity: 1
-        });
-
-        const ocean = new THREE.Mesh(geometry, material);
-        ocean.rotation.x = -Math.PI / 2;
-        ocean.position.y = -150;
-        this.scene.add(ocean);
-        this.oceanGeometry = geometry;
+    getPlane() {
+        return this.plane;
     }
 
-    setupLights() {
-        // 환경광
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    getZVelocity() {
+        return this.z_velocity;
+    }
+
+    getSegments() {
+        return this.segments;
+    }
+
+    setupLights() {        
+        // Ambient light
+        const ambientLight = new THREE.AmbientLight(0xffffff, 5);
         this.scene.add(ambientLight);
 
-        // 점광원
-        const pointLight = new THREE.PointLight(0xffffff, 2.5, 2000, 2);
+        const pointLight = new THREE.PointLight(0xffffff, 20, 200, 2);
         pointLight.position.set(0, 10, 0);
         this.scene.add(pointLight);
+
+        // Spot light
+        const spotLight = new THREE.SpotLight();
+        spotLight.intensity = 70;
+        spotLight.decay = 0;
+        spotLight.position.set(0, 100, 0);
+        spotLight.penumbra = 0.5;
+        spotLight.angle = Math.PI / 2;
+        this.scene.add( spotLight );
+
+        const boatGeometry = new THREE.SphereGeometry(5);
+        const boatMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} ); 
+        const boatMesh = new THREE.Mesh( boatGeometry, boatMaterial );
+        boatMesh.position.set(0, 5, 0);
+        this.scene.add( boatMesh );
+    }
+
+    
+    setupPlane() {
+        const geometry = new THREE.PlaneGeometry(this.size, this.size, this.segments, this.segments);
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x5050ff,
+            side: THREE.DoubleSide,
+            metalness: 0.98,
+            roughness: 0.0,
+            transparent: true,
+            opacity: 0.9
+        });
+
+        this.plane = new THREE.Mesh(geometry, material);
+        this.plane.rotation.x = -Math.PI / 2;
+        this.plane.position.y = -5;
+        this.plane.receiveShadow = true;
+
+        this.scene.add(this.plane);
     }
 
     createStarfield() {
